@@ -9,4 +9,6 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User'
+export type * from './models/Equipment'
+export type * from './models/UsageLog'
 export type * from './commonInputTypes'
