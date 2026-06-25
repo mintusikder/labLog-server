@@ -1,12 +1,9 @@
 import { RequestHandler } from "express";
-import { prisma } from "../../lib/prisma";
+import { equipmentServices } from "./equipment.service";
 
 const createEquipment: RequestHandler = async (req, res) => {
   try {
-    const payload = req.body;
-    const equipment = await prisma.equipment.create({
-      data: payload,
-    });
+    const equipment = await equipmentServices.createEquipment(req.body);
     res.send({
       message: "Equipment Create Successful",
       data: equipment,
@@ -18,7 +15,7 @@ const createEquipment: RequestHandler = async (req, res) => {
 
 const getEquipment: RequestHandler = async (req, res) => {
   try {
-    const equipment = await prisma.equipment.findMany();
+    const equipment = await equipmentServices.getAllEquipment();
     res.send({
       message: "Get all data",
       equipment,
