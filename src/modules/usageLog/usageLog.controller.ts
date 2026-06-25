@@ -1,12 +1,9 @@
 import { RequestHandler } from "express";
-import { prisma } from "../../lib/prisma";
+import { logServices } from "./usageLog.service";
 
 const createLog: RequestHandler = async (req, res) => {
   try {
-    const payload = req.body;
-    const log = await prisma.usageLog.create({
-      data: payload,
-    });
+    const log = await logServices.createLog(req.body);
     res.send({
       message: "create log successful",
       data: log,
@@ -18,12 +15,7 @@ const createLog: RequestHandler = async (req, res) => {
 
 const getLog: RequestHandler = async (req, res) => {
   try {
-    const log = await prisma.usageLog.findMany({
-      include: {
-        user: true,
-        equipment: true,
-      },
-    });
+    const log = await logServices.getAllLog();
     res.send({
       message: "get all log",
       log,
