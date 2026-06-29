@@ -1,8 +1,10 @@
 import { betterAuth } from "better-auth";
 import { prisma } from "./prisma";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { twoFactor } from "better-auth/plugins"
 
 export const auth = betterAuth({
+   appName: "Lab Log",
   database: prismaAdapter(prisma, {
     provider: "postgresql", // or "mysql", "postgresql", ...etc
   }),
@@ -20,4 +22,7 @@ export const auth = betterAuth({
       redirectURI: `${process.env.FRONTEND_URL}/api/auth/callback/github`,
     },
   },
+     plugins: [
+        twoFactor() 
+    ]
 });
