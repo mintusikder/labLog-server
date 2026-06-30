@@ -59,7 +59,7 @@ model UsageLog {
   purpose   String
   notes     String?
 
-  // user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
   equipment Equipment @relation(fields: [equipmentId], references: [id])
 
   createAt  DateTime @default(now())
@@ -81,9 +81,10 @@ model User {
   twofactors       TwoFactor[]
 
   role       String?
-  banned     Boolean?  @default(false)
+  banned     Boolean?   @default(false)
   banReason  String?
   banExpires DateTime?
+  usageLogs  UsageLog[]
 
   @@unique([email])
   @@map("user")

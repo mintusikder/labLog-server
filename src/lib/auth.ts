@@ -1,11 +1,26 @@
 import { betterAuth } from "better-auth";
 import { prisma } from "./prisma";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { twoFactor } from "better-auth/plugins";
+import { createAccessControl, twoFactor } from "better-auth/plugins";
 import { Resend } from "resend";
 import { admin } from "better-auth/plugins";
 
 const resend = new Resend("re_eWCkxn5h_LmbinjiEBWM57AKs4ouViKuq");
+
+const statement = {
+  user: ["create", "read", "update", "delete"],
+  equipment: ["create", "read", "update", "delete"],
+} as const;
+
+const ac = createAccessControl(statement);
+
+export const userRole = ac.newRole({
+  equipment: ["read", "update"],
+});
+export const adminRole = ac.newRole({
+  user: ["create", "read", "update", "delete"],
+  equipment: ["create", "read", "update", "delete"],
+});
 
 export const auth = betterAuth({
   appName: "Lab Log",
@@ -27,7 +42,14 @@ export const auth = betterAuth({
     },
   },
   plugins: [
-    admin(),
+    admin({
+      adminRoles: ["admin", "user"],
+      defaultRole: "user",
+      roles: {
+        admin: adminRole,
+        user: userRole,
+      },
+    }),
 
     twoFactor({
       otpOptions: {
