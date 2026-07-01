@@ -9,7 +9,11 @@ equipmentRoute.post(
   auth("equipment", "create"),
   equipmentController.createEquipment,
 );
-// equipmentRoute.post("/", auth("equipment", "create"), equipmentController.createEquipment);
-equipmentRoute.get("/", equipmentController.getEquipment);
+
+equipmentRoute.get(
+  "/",
+  auth("equipment", "read"),
+  equipmentController.getEquipment,
+);
 
 export default equipmentRoute;

@@ -1,34 +1,33 @@
 import { betterAuth } from "better-auth";
 import { prisma } from "./prisma";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { createAccessControl, twoFactor } from "better-auth/plugins";
+import { twoFactor } from "better-auth/plugins";
 import { Resend } from "resend";
 import { admin } from "better-auth/plugins";
+import { adminRole, userRole } from "./permissions";
 
 const resend = new Resend("re_eWCkxn5h_LmbinjiEBWM57AKs4ouViKuq");
 
-const statement = {
-  user: ["create", "read", "update", "delete"],
-  equipment: ["create", "read", "update", "delete"],
-} as const;
-
-const ac = createAccessControl(statement);
-
-export const userRole = ac.newRole({
-  equipment: ["read", "update"],
-});
-export const adminRole = ac.newRole({
-  user: ["create", "read", "update", "delete"],
-  equipment: ["create", "read", "update", "delete"],
-});
-
 export const auth = betterAuth({
   appName: "Lab Log",
+  baseUrl: process.env.BETTER_AUTH_URL as string,
+  basePath: "/api/v1/auth",
+
   database: prismaAdapter(prisma, {
     provider: "postgresql", // or "mysql", "postgresql", ...etc
   }),
 
   trustedOrigins: [process.env.FRONTEND_URL!],
+
+  // rateLimit: {
+  //   enabled: true,
+  //   window: 60,
+  //   max: 100,
+  // },
+
+  advanced:{
+    cookiePrefix:"LobLog"
+  },
 
   emailAndPassword: {
     enabled: true,

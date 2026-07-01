@@ -44,6 +44,9 @@ const auth = (resource: "user" | "equipment", action: string) => {
           },
         },
       });
+      if(!hasPermission || !hasPermission.success)res.status(401).send({ message: `Forbidden: You do not have permission to ${action} ${resource}!` }) 
+
+
       console.log({ session, hasPermission });
       next();
     } catch (error) {
